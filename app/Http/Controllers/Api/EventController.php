@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Routing\ResponseFactory;
+use Response;
 
 class EventController extends Controller
 {
@@ -14,13 +16,13 @@ class EventController extends Controller
      */
     public function index()
     {
-        return EventResource::collection(Event::with('user')->get());
+        return EventResource::collection(Event::with('user')->paginate());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): EventResource
     {
         $validated_data = $request->validate(
             [
@@ -39,7 +41,7 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show(Event $event): EventResource
     {
         $event->load('user', 'attendees');
         return new EventResource($event);
@@ -48,7 +50,7 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, Event $event): EventResource
     {
         $validated_data = $request->validate(
             [
@@ -67,7 +69,7 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $event)
+    public function destroy(Event $event): Response|ResponseFactory
     {
         $event->delete();
 
