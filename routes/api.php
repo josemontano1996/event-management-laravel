@@ -38,7 +38,7 @@ Route::get('events', [EventController::class, 'index']);
 Route::get('events/{event}', [EventController::class, 'show']);
 
 //Event attendees
-Route::get('events/{event}/attendees', [AttendeeController::class, 'index'])->middleware('auth.sanctum');
+Route::get('events/{event}/attendees', [AttendeeController::class, 'index']);
 Route::get('events/{event}/attendees/{attendee}', [AttendeeController::class, 'show']);
 
 // Auth protected routes

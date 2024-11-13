@@ -5,25 +5,29 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Http\Traits\CanLoadRelationships;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Gate;
 use Response;
 
 class EventController extends Controller
 {
-
-    use CanLoadRelationships;
+    use CanLoadRelationships, AuthorizesRequests;
 
 
     private array $relations = ['user', 'attendees', 'attendees.user'];
 
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
+
+        $this->authorize('viewAny', Event::class);
 
         $query = $this->loadRelationships(Event::query());
 
@@ -35,6 +39,9 @@ class EventController extends Controller
      */
     public function store(Request $request): EventResource
     {
+
+        $this->authorize('create', Event::class);
+
         $validated_data = $request->validate(
             [
                 'name' => 'required|string|max:255',
@@ -54,6 +61,8 @@ class EventController extends Controller
      */
     public function show(Event $event): EventResource
     {
+        $this->authorize('view', $event);
+
         return new EventResource($this->loadRelationships($event));
     }
 
@@ -67,7 +76,10 @@ class EventController extends Controller
               abort(403, 'You are not authorized to update this event.');
           } */
 
-        Gate::authorize('update', $event);
+        /*         Gate::authorize('update', $event);
+         */
+        
+        $this->authorize('update', $event);
 
         $validated_data = $request->validate(
             [
@@ -88,6 +100,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event): Response|ResponseFactory
     {
+        $this->authorize('delete', $event);
+
         $event->delete();
 
         return response(status: 204);
