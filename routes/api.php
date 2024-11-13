@@ -41,8 +41,11 @@ Route::get('events/{event}', [EventController::class, 'show']);
 Route::get('events/{event}/attendees', [AttendeeController::class, 'index'])->middleware('auth.sanctum');
 Route::get('events/{event}/attendees/{attendee}', [AttendeeController::class, 'show']);
 
-// Authenticated event routes
+// Auth protected routes
 Route::middleware('auth:sanctum')->group(function () {
+
+    //Log out
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     // Events
     Route::post('events', [EventController::class, 'store']);
