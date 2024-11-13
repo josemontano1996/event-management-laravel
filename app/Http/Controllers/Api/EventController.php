@@ -8,6 +8,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
+use Illuminate\Support\Facades\Gate;
 use Response;
 
 class EventController extends Controller
@@ -15,7 +16,7 @@ class EventController extends Controller
 
     use CanLoadRelationships;
 
-    
+
     private array $relations = ['user', 'attendees', 'attendees.user'];
 
     /**
@@ -61,6 +62,13 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event): EventResource
     {
+
+        /*   if (Gate::denies('update-event', $event)) {
+              abort(403, 'You are not authorized to update this event.');
+          } */
+
+        Gate::authorize('update', $event);
+
         $validated_data = $request->validate(
             [
                 'name' => 'sometimes|string|max:255',
