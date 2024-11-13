@@ -11,7 +11,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 trait CanLoadRelationships
 {
 
-    public function loadRelationships(Model|EloquentBuilder|QueryBuilder|HasMany $for, ?array $relations = null): Model|EloquentBuilder|QueryBuilder
+    public function loadRelationships(Model|EloquentBuilder|QueryBuilder|HasMany $for, ?array $relations = null): Model|EloquentBuilder|QueryBuilder|HasMany
     {
 
         $relations = $relations ?? $this->relations ?? [];
