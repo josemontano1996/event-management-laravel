@@ -9,17 +9,25 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Gate;
 use Response;
 
-class EventController extends Controller
+class EventController extends Controller implements HasMiddleware
 {
     use CanLoadRelationships, AuthorizesRequests;
 
 
     private array $relations = ['user', 'attendees', 'attendees.user'];
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('throttle:60, 1', only: ['store', 'update', 'destroy']),
+        ];
+    }
 
     /**
      * Display a listing of the resource.
@@ -78,7 +86,7 @@ class EventController extends Controller
 
         /*         Gate::authorize('update', $event);
          */
-        
+
         $this->authorize('update', $event);
 
         $validated_data = $request->validate(
