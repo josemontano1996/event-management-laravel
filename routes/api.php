@@ -30,31 +30,31 @@ Route::get('/user', function (Request $request) {
 
 
 //Authentication routes
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 
 //Publicly accessible routes
-Route::get('events', [EventController::class, 'index']);
-Route::get('events/{event}', [EventController::class, 'show']);
+Route::get('events', [EventController::class, 'index'])->name('events.index');
+Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
 
 //Event attendees
-Route::get('events/{event}/attendees', [AttendeeController::class, 'index']);
-Route::get('events/{event}/attendees/{attendee}', [AttendeeController::class, 'show']);
+Route::get('events/{event}/attendees', [AttendeeController::class, 'index'])->name('attendees.index');
+Route::get('events/{event}/attendees/{attendee}', [AttendeeController::class, 'show'])->name('attendees.show');
 
 // Auth protected routes
 Route::middleware('auth:sanctum')->group(function () {
 
     //Log out
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Events
-    Route::post('events', [EventController::class, 'store']);
-    Route::put('events/{event}', [EventController::class, 'update']);
-    Route::delete('events/{event}', [EventController::class, 'destroy']);
+    Route::post('events', [EventController::class, 'store'])->name('events.store');
+    Route::put('events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::delete('events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     // Event Attendees
-    Route::delete('events/{event}/attendees/{attendee}', [AttendeeController::class, 'destroy']);
-    Route::post('events/{event}/attendees', [AttendeeController::class, 'store']);
+    Route::delete('events/{event}/attendees/{attendee}', [AttendeeController::class, 'destroy'])->name('attendees.destroy');
+    Route::post('events/{event}/attendees', [AttendeeController::class, 'store'])->name('attendees.store');
 });
 
 // Fallback route for undefined endpoints
